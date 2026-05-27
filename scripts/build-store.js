@@ -364,12 +364,50 @@ function authorize(clientSecret) {
   return new Promise((resolve, reject) => {
     const state = crypto.randomBytes(16).toString('hex');
 
+    const buildAuthUrl = (shop) =>
+      `https://${shop}/admin/oauth/authorize?client_id=${CLIENT_ID}&scope=${encodeURIComponent(SCOPES)}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&state=${state}`;
+
+    const exchangeCode = async (shop, code) => {
+      const body = new URLSearchParams({ client_id: CLIENT_ID, client_secret: clientSecret, code }).toString();
+      return new Promise((res2, rej2) => {
+        const r = https.request({
+          hostname: shop,
+          path: '/admin/oauth/access_token',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': Buffer.byteLength(body),
+          },
+        }, (resp) => {
+          let d = '';
+          resp.on('data', (c) => (d += c));
+          resp.on('end', () => res2(JSON.parse(d)));
+        });
+        r.on('error', rej2);
+        r.write(body);
+        r.end();
+      });
+    };
+
     const server = http.createServer(async (req, res) => {
       const parsed = new URL(req.url, `http://localhost:${PORT}`);
+
+      // Handle Shopify's initial install redirect (hits App URL = http://localhost:3000)
+      if (parsed.pathname === '/') {
+        const shop = parsed.searchParams.get('shop') || SHOP;
+        const authUrl = buildAuthUrl(shop);
+        log(`\n🔀 Install redirect received — initiating OAuth for ${shop}...`);
+        res.writeHead(302, { Location: authUrl });
+        res.end();
+        return;
+      }
+
+      // Handle OAuth callback
       if (parsed.pathname !== '/callback') { res.end(); return; }
 
-      const code  = parsed.searchParams.get('code');
+      const code     = parsed.searchParams.get('code');
       const gotState = parsed.searchParams.get('state');
+      const shop     = parsed.searchParams.get('shop') || SHOP;
 
       if (gotState !== state) {
         res.end('State mismatch. Please try again.');
@@ -389,26 +427,7 @@ function authorize(clientSecret) {
 
       server.close();
 
-      // Exchange code for access token
-      const body = new URLSearchParams({ client_id: CLIENT_ID, client_secret: clientSecret, code }).toString();
-      const tokenRes = await new Promise((res2, rej2) => {
-        const r = https.request({
-          hostname: SHOP,
-          path: '/admin/oauth/access_token',
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Content-Length': Buffer.byteLength(body),
-          },
-        }, (resp) => {
-          let d = '';
-          resp.on('data', (c) => (d += c));
-          resp.on('end', () => res2(JSON.parse(d)));
-        });
-        r.on('error', rej2);
-        r.write(body);
-        r.end();
-      });
+      const tokenRes = await exchangeCode(shop, code);
 
       if (tokenRes.access_token) {
         ok('Access token obtained');
@@ -419,11 +438,11 @@ function authorize(clientSecret) {
     });
 
     server.listen(PORT, () => {
-      const authUrl = `https://${SHOP}/admin/oauth/authorize?client_id=${CLIENT_ID}&scope=${encodeURIComponent(SCOPES)}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&state=${state}`;
-      log('\n🔐 Opening Shopify authorization in your browser...');
-      log('   If the browser does not open, visit this URL manually:\n');
-      log(`   ${authUrl}\n`);
-      openBrowser(authUrl);
+      log('\n🔐 Waiting for Shopify install...');
+      log('\n   Go to your Dev Dashboard → Store builder → click "Install app"');
+      log('   (or visit the URL below directly in your browser)\n');
+      const authUrl = buildAuthUrl(SHOP);
+      log(`   Direct URL: ${authUrl}\n`);
     });
 
     server.on('error', (e) => {

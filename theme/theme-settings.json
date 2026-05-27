@@ -1,0 +1,109 @@
+{
+  "_comment": "Dawn theme customization settings for Blocky & Co. Apply in Shopify Admin > Online Store > Themes > Customize",
+  "theme": "Dawn (Shopify free theme — recommended for launch)",
+
+  "colors": {
+    "accent_1": "#C8722A",
+    "accent_1_contrast": "#FFFFFF",
+    "accent_2": "#1E2329",
+    "accent_2_contrast": "#FFFFFF",
+    "background_1": "#FAF4EC",
+    "background_2": "#F0E6D6",
+    "text": "#1E2329",
+    "text_secondary": "#7A6A5A",
+    "border": "#E8D4B8",
+    "error": "#C0392B",
+    "success": "#3D7A5C"
+  },
+
+  "typography": {
+    "heading_font": "Playfair Display",
+    "heading_weight": "700",
+    "body_font": "Inter",
+    "body_weight": "400",
+    "body_size": "16px"
+  },
+
+  "header": {
+    "sticky": true,
+    "logo_text": "Blocky & Co.",
+    "logo_width": "160",
+    "show_announcement_bar": true,
+    "announcement_text": "Free shipping on orders over $50 🐾 | 30-day returns",
+    "announcement_color_bg": "#C8722A",
+    "announcement_color_text": "#FFFFFF"
+  },
+
+  "hero_section": {
+    "type": "image-banner",
+    "headline": "Built for blocky heads. Made for big hearts.",
+    "subheadline": "Quality gear for the dogs everyone underestimates — and the people who know better.",
+    "button_text": "Shop the Collection",
+    "button_url": "/collections/all",
+    "overlay_opacity": 40,
+    "content_position": "middle left",
+    "image_height": "large"
+  },
+
+  "sections_order": [
+    "announcement-bar",
+    "header",
+    "image-banner (hero)",
+    "icon-with-text (trust strip)",
+    "rich-text (why we exist)",
+    "featured-collection",
+    "collage (bully checklist)",
+    "multicolumn (reviews)",
+    "email-signup",
+    "image-with-text (social media CTA)",
+    "footer"
+  ],
+
+  "trust_strip": {
+    "type": "icon-with-text",
+    "columns": 4,
+    "items": [
+      { "icon": "paw", "heading": "Bull Breed Tested", "text": "Made for these specific dogs" },
+      { "icon": "truck", "heading": "Free Shipping $50+", "text": "To the continental US" },
+      { "icon": "return", "heading": "30-Day Returns", "text": "No-hassle policy" },
+      { "icon": "chat", "heading": "Bully People Support", "text": "We get it because we live it" }
+    ]
+  },
+
+  "collection_settings": {
+    "products_per_page": 12,
+    "columns_desktop": 3,
+    "columns_mobile": 2,
+    "show_vendor": false,
+    "show_rating": true,
+    "image_ratio": "square",
+    "quick_add": true
+  },
+
+  "product_page": {
+    "media_width": "55",
+    "sticky_summary": true,
+    "show_quantity_selector": true,
+    "show_share_buttons": true,
+    "show_breadcrumbs": true,
+    "enable_video_looping": false
+  },
+
+  "cart": {
+    "type": "drawer",
+    "show_vendor": false,
+    "show_order_note": true,
+    "free_shipping_threshold_amount": 50,
+    "free_shipping_threshold_currency": "USD",
+    "upsell_products": true
+  },
+
+  "footer": {
+    "newsletter_enable": true,
+    "newsletter_heading": "Join the blocky family.",
+    "show_social_icons": true,
+    "social_instagram": "https://instagram.com/blockyandco",
+    "social_tiktok": "https://tiktok.com/@blockyandco",
+    "social_facebook": "https://facebook.com/blockyandco"
+  }
+}

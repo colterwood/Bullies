@@ -21,7 +21,6 @@ const PORT         = 3000;
 const API          = '2024-10';
 const SCOPES       = [
   'write_products', 'read_products',
-  'write_custom_collections', 'read_custom_collections',
   'write_content', 'read_content',
   'write_price_rules', 'read_price_rules',
 ].join(',');
